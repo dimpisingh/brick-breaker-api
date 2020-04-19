@@ -56,7 +56,7 @@ class UserController extends BaseController {
         if ($request->isPost) {
             $login = $request->body['login'];
             $password = utils::generate_password($request->body['password'], self::$password_salt);
-            $user = user::login_with_credentials($login, $password);
+            $user = user::get_by_credentials($login, $password);
 
             if ($user) {
                 $token = auth::authorize($user['id']);

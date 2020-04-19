@@ -28,7 +28,7 @@ class hi_score extends base {
 
     public function get_rating () {
         return App::$db->getAll(
-            'SELECT u.username, u.country_code, h.score FROM hi_scores h JOIN users u ON u.id = h.user_id ORDER BY h.score DESC'
+            'SELECT u.fullname, u.country_code, h.score FROM hi_scores h JOIN users u ON u.id = h.user_id ORDER BY h.score DESC'
         );
     }
 }

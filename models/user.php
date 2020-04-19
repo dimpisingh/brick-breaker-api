@@ -7,7 +7,7 @@ class user extends base {
         return self::save($data, self::$table);
     }
 
-    public static function login_with_credentials ($login, $password) {
+    public static function get_by_credentials ($login, $password) {
         return App::$db->getOne(
             'SELECT * FROM ' . self::$table . ' WHERE (email = :email OR username = :username) AND password = :password LIMIT 1',
             [
