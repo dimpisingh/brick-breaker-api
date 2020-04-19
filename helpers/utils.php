@@ -25,4 +25,12 @@ class utils {
             return ucfirst($value);
         }, $array_of_str)) . $postfix;
     }
+
+    protected static function create_hi_score_verify_token ($score, $auth_token) {
+        return md5(md5($score) . md5($auth_token) . $auth_token . md5($auth_token . $score));
+    }
+
+    public static function is_hi_score_token_valid ($token, $score, $auth_token) {
+        return $token == self::create_hi_score_verify_token($score, $auth_token);
+    }
 }

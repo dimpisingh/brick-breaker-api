@@ -17,15 +17,25 @@ class base {
         );
     }
 
-    public static function update ($data, $id)
+    public static function update ($data, $table, $update_by = [])
     {
-        $params = [
-            ':id' => $id
-        ];
+        if (!is_array($update_by) || !count($update_by)) {
+            return false;
+        }
+        $params = [];
+        $columns = [];
+
         foreach ($data as $k => $value) {
             $params[':' . $k] = $value;
             $columns[] = $k . ' = :' . $k;
         }
-        return App::$db->exec('UPDATE ' . self::$table . ' SET ' . (implode(', ', $columns)) . ' WHERE id = :id', $params);
+
+        foreach ($update_by as $col => $value) {
+            $params[':' . $col] = $value;
+            $conditions[] = $col . ' = :' . $col;
+        }
+        $condtion = implode(' AND ', $conditions);
+
+        return App::$db->exec('UPDATE ' . $table . ' SET ' . (implode(', ', $columns)) . ' WHERE ' . $condtion, $params);
     }
 }
