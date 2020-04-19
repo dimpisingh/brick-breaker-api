@@ -14,18 +14,17 @@ require_once './helpers/utils.php';
 $request = new Request();
 $response = new Response();
 $controller = @$_GET['controller'];
-$action = 'action' . ucfirst(@$_GET['action']);
-$controllers = ['user'];
-if (!in_array($controller, $controllers)) {
-  print json_encode([
-    'success'    => false,
-    'status'     => 404,
-    'message'    => 'Not found'
-  ]);
-  die;
+$action = @$_GET['action'];
+$action_name = utils::convert_to_camel_case($action, '-', 'action');
+$controller_name = utils::convert_to_camel_case($controller, '-', '', 'Controller');
+
+if(!file_exists('./controllers/' . $controller . '.php')) {
+    $response->sendStatus(404);
 }
-$controller_name = ucfirst($controller) . 'Controller';
 require_once('./controllers/' . $controller . '.php');
+if (!method_exists($controller_name, $action_name)) {
+    $response->sendStatus(404);
+}
+
 $object = new $controller_name();
-$object->{$action}();
-?>
+$object->{$action_name}();

@@ -9,7 +9,6 @@ class Request {
     public $isDelete;
 
     public function __construct () {
-        $this->isPost();
         $this->body = json_decode(file_get_contents("php://input"), true);
         $this->headers = getallheaders();
 

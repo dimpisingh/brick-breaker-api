@@ -17,4 +17,12 @@ class utils {
     public static function get_country_flag_url ($country_code, $size = 32) {
         return 'https://www.countryflags.io/' . $country_code . '/flat/' . $size . '.png';
     }
+
+    public static function convert_to_camel_case ($str, $separator = '-', $prefix = '', $postfix = '') {
+        $array_of_str = explode($separator, $str);
+
+        return $prefix . implode('', array_map(function ($value) {
+            return ucfirst($value);
+        }, $array_of_str)) . $postfix;
+    }
 }
