@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule ^([\w\_\-]+)$ ./index.php?controller=$1&action=index
+RewriteRule ^([\w\_\-]+)/([\w\_\-]+)$ ./index.php?controller=$1&action=$2
