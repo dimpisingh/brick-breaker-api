@@ -6,12 +6,12 @@ class HiScoreController extends BaseController {
     public function actionIndex () {
         $request = $this->request;
         $response = $this->response;
-        $auth_token = $request->headers['authToken'];
+        $auth_token = $request->headers['Auth-Token'];
 
         if (!$auth_token) {
             $response->sendStatus(401);
         }
-        $authorized_user = auth::get_user_id($auth_token);
+        $authorized_user = auth::getUserId($auth_token);
         if (!$authorized_user) {
             $response->sendStatus(401);
         }
@@ -19,16 +19,16 @@ class HiScoreController extends BaseController {
         if ($request->isPost) {
             $score = $request->body['score'];
             $token = $request->body['verifyToken'];
-            if (!utils::is_hi_score_token_valid($token, $score, $auth_token)) {
+            if (!utils::isHiScoreTokenValid($token, $score, $auth_token)) {
                 $response->sendStatus(400);
             }
-            $highest_score = hi_score::get_by_user($authorized_user);
+            $highest_score = hi_score::getByUser($authorized_user);
             if ($highest_score['id']) {
                 if ($highest_score['score'] < $score) {
-                    hi_score::update_record($score, $authorized_user);
+                    hi_score::updateRecord($score, $authorized_user);
                 }
             } else {
-                hi_score::create_new($score, $authorized_user);
+                hi_score::createNew($score, $authorized_user);
             }
 
             $response->sendStatus(200);
@@ -38,13 +38,13 @@ class HiScoreController extends BaseController {
     public function actionRating () {
         $request = $this->request;
         $response = $this->response;
-        $auth_token = $request->headers['authToken'];
+        $auth_token = $request->headers['Auth-Token'];
 
-        if (!$auth_token || !auth::is_authorized($auth_token)) {
+        if (!$auth_token || !auth::isAuthorized($auth_token)) {
             $response->sendStatus(401);
         }
         if ($request->isGet) {
-            $response->sendJson(hi_score::get_rating());
+            $response->sendJson(hi_score::getRating());
         }
         $response->sendStatus(404);
     }

@@ -11,7 +11,7 @@ class UserController extends BaseController {
 
         if ($request->isPost) {
             $user = $request->body;
-            $existant_user = user::get_existant($user['email'], $user['username']);
+            $existant_user = user::getExistent($user['email'], $user['username']);
             if ($existant_user) {
                 $duplicated_fields;
                 foreach ($existant_user as $field => $value) {
@@ -27,20 +27,20 @@ class UserController extends BaseController {
                     ]);
             }
             $user['created_at'] = date('Y-m-d H:i:s');
-            $user['password'] = utils::generate_password($user['password'], self::$password_salt);
-            $location = user::get_location($request->getIP());
+            $user['password'] = utils::generatePassword($user['password'], self::$password_salt);
+            $location = user::getLocation($request->getIP());
             
             $data = array_merge($user, $location);
             $last_insert_id = user::create($data);
             $data['id'] = $last_insert_id;
-            $data['authToken'] = auth::authorize($last_insert_id);
-            $data['flag'] = utils::get_country_flag_url($data['country_code']);
+            $data['Auth-Token'] = auth::authorize($last_insert_id);
+            $data['flag'] = utils::getCountryFlagUrl($data['country_code']);
             $response->setStatus(200)->sendJson($data);
         } else {
-            if ($request->headers['authToken']) {
-                $user = user::get_by_auth_token($request->headers['authToken']);
+            if ($request->headers['Auth-Token']) {
+                $user = user::getByAuthToken($request->headers['Auth-Token']);
                 if ($user) {
-                    $user['flag'] = utils::get_country_flag_url($user['country_code']);
+                    $user['flag'] = utils::getCountryFlagUrl($user['country_code']);
                     $response->setStatus(200)->sendJson($user);
                 } else {
                     $response->sendStatus(401);
@@ -55,12 +55,12 @@ class UserController extends BaseController {
 
         if ($request->isPost) {
             $login = $request->body['login'];
-            $password = utils::generate_password($request->body['password'], self::$password_salt);
-            $user = user::get_by_credentials($login, $password);
+            $password = utils::generatePassword($request->body['password'], self::$password_salt);
+            $user = user::getByCredentials($login, $password);
 
             if ($user) {
                 $token = auth::authorize($user['id']);
-                $user['authToken'] = $token;
+                $user['Auth-Token'] = $token;
                 $response->setStatus(200)->sendJson($user);
             } else {
                 $response->sendStatus(401);
@@ -75,8 +75,8 @@ class UserController extends BaseController {
         $response = $this->response;
 
         if ($request->isPost) {
-            if ($request->headers['authToken']) {
-                auth::signOut($request->headers['authToken']);
+            if ($request->headers['Auth-Token']) {
+                auth::signOut($request->headers['Auth-Token']);
                 $response->sendStatus(200);
             } else {
                 $response->sendStatus(403);

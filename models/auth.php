@@ -3,11 +3,11 @@
 class auth extends base {
     protected static $table = 'authentication';
 
-    public static function is_authorized ($token) {
-        return (bool)self::get_user_id($token);
+    public static function isAuthorized ($token) {
+        return (bool)self::getUserId($token);
     }
 
-    public static function get_user_id ($token) {
+    public static function getUserId ($token) {
         return App::$db->getOne(
             'SELECT user_id FROM ' . self::$table . ' WHERE token = :token LIMIT 1',
             [':token' => $token]

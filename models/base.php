@@ -11,8 +11,8 @@ class base {
         }
         return App::$db->create(
             'INSERT INTO ' . $table . ' 
-                (' . utils::implode_array_keys(', ', $data) . ')
-                VALUES (' . utils::implode_array_keys(', ', $params) . ')',
+                (' . utils::implodeArrayKeys(', ', $data) . ')
+                VALUES (' . utils::implodeArrayKeys(', ', $params) . ')',
             $params
         );
     }
