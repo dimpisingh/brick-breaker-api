@@ -9,6 +9,7 @@ require_once './classes/Request.php';
 require_once './models/base.php';
 require_once './controllers/base.php';
 require_once './helpers/utils.php';
+
 $request = new Request();
 $response = new Response();
 

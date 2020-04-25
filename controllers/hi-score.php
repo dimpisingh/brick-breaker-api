@@ -15,14 +15,14 @@ class HiScoreController extends BaseController {
         if (!$authorized_user) {
             $response->sendStatus(401);
         }
+        $highest_score = hi_score::getByUser($authorized_user);
 
         if ($request->isPost) {
             $score = $request->body['score'];
-            $token = $request->body['verifyToken'];
+            $token = $request->body['verificationToken'];
             if (!utils::isHiScoreTokenValid($token, $score, $auth_token)) {
                 $response->sendStatus(400);
             }
-            $highest_score = hi_score::getByUser($authorized_user);
             if ($highest_score['id']) {
                 if ($highest_score['score'] < $score) {
                     hi_score::updateRecord($score, $authorized_user);
@@ -32,6 +32,8 @@ class HiScoreController extends BaseController {
             }
 
             $response->sendStatus(200);
+        } else {
+            $response->sendJson($highest_score['score']);
         }
     }
 

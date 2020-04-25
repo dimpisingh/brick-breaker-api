@@ -49,6 +49,19 @@ class UserController extends BaseController {
         }
     }
 
+    public function actionIp () {
+        $request = $this->request;
+        $response = $this->response;
+
+        if ($request->isGet) {
+            $ip = $request->getIp();
+            $ip = $ip == '127.0.0.1' ? '5.44.37.205' : $ip;
+            $response->sendJson($ip);
+        } else {
+            $response->sendStatus(404);
+        }
+    }
+
     public function actionSignin () {
         $request = $this->request;
         $response = $this->response;
